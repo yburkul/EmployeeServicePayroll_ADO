@@ -78,19 +78,6 @@ namespace EmployeeServicePayrollADO
             }
             return empPayrollList;
         }
-        //static public int InsertEmployeeData(EmpPayroll empPayroll)
-        //{
-        //    SqlConnection sqlConnection = new SqlConnection(connectionString);
-        //    try
-        //    {
-        //        using(sqlconnection)
-        //        {
-        //            sqlconnection.Open();
-        //            SqlCommand sqlCommand = new SqlCommand("")
-        //        }
-        //    }
-        //}
-
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome in Employee Service Payroll");
