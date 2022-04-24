@@ -78,15 +78,15 @@ namespace EmployeeServicePayrollADO
             }
             return empPayrollList;
         }
-       
+
         public bool UpdateEmployeeSalary(EmpPayroll empPayroll)
         {
             try
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    SqlCommand command = new SqlCommand("UpdateEmplyoeeSalary", connection);
-                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    SqlCommand command = new SqlCommand("dbo.UpdateEmplyoeeSalary", connection);
+                    command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@EmpID", empPayroll.ID);
                     command.Parameters.AddWithValue("@Name", empPayroll.Name);
                     command.Parameters.AddWithValue("@BasicPay", empPayroll.BasicPay);
@@ -110,13 +110,87 @@ namespace EmployeeServicePayrollADO
                 return false;
             }
         }
+        public bool GetEmplyeeDataInDateRange(DateTime fromDate, DateTime toDate)
+        {
+            try
+            {
+                EmpPayroll empPayroll = new EmpPayroll();
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    SqlCommand command = new SqlCommand("dbo.GetEmployeePayrollDataInDateRange", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@FromDate", fromDate);
+                    command.Parameters.AddWithValue("@ToDate", toDate);
+                    connection.Open();
+                    SqlDataReader dr = command.ExecuteReader();
+                    if (dr.HasRows)
+                    {
+                        while (dr.Read())
+                        {
+                            empPayroll.ID = dr.GetInt32(0);
+                            empPayroll.Name = dr.GetString(1);
+                            empPayroll.StartDate = dr.GetDateTime(2);
+                            empPayroll.Gender = dr.GetString(3);
+                            empPayroll.PhoneNumber = dr.GetInt64(4);
+                            empPayroll.Address = dr.GetString(5);
+                            empPayroll.Department = dr.GetString(6);
+                            empPayroll.BasicPay = dr.GetInt64(7);
+                            empPayroll.Deduction = dr.GetInt32(8);
+                            empPayroll.TaxablePay = dr.GetInt32(9);
+                            empPayroll.IncomeTax = dr.GetInt32(10);
+                            empPayroll.NetPay = dr.GetInt32(11); ;
+                            Console.WriteLine(empPayroll.ID + "," + empPayroll.Name + "," + empPayroll.StartDate + "," + empPayroll.Gender + "," + empPayroll.PhoneNumber + ","
+                            + empPayroll.Address + "," + empPayroll.Department + "," + empPayroll.BasicPay + "," + empPayroll.Deduction + "," + empPayroll.TaxablePay + "," + empPayroll.IncomeTax + "," + empPayroll.NetPay);
+                        }
+                        return true;
+                    }
+                    connection.Close();
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome in Employee Service Payroll");
             Program program = new Program();
-            program.EstablishConnection();
-            program.CloseConnection();
-            GetAllEmployeePayrollData();
+            int option = 0;
+            do
+            {
+                Console.WriteLine("1: for EstablishConnection");
+                Console.WriteLine("2: for CloseConnection");
+                Console.WriteLine("3: for Get all the Emplyoee data");
+                Console.WriteLine("4: for Get the Emplyoee Data in Date range");
+                Console.WriteLine("0: For Exit");
+                option = int.Parse(Console.ReadLine()); 
+                switch(option)
+                {
+                    case 1:
+                        program.EstablishConnection();
+                        break;
+                    case 2:
+                        program.CloseConnection();
+                        break;
+                    case 3:
+                        GetAllEmployeePayrollData();
+                        break;
+                    case 4:
+                        var fromDate = Convert.ToDateTime("2022-03-01");
+                        var ToDate = Convert.ToDateTime("2022-04-01");
+                        program.GetEmplyeeDataInDateRange(fromDate, ToDate);
+                        break;
+                    case 0:
+                        Console.WriteLine("Exit");
+                        break;
+                    default:
+                        Console.WriteLine("Invalid Option");
+                        break;
+                }                
+            }
+            while(option!=0);
         }
     }
 }

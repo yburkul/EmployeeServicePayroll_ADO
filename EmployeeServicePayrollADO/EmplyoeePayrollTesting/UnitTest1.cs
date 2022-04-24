@@ -6,7 +6,7 @@ namespace EmplyoeePayrollTesting
 {
     public class Tests
     {
-        Program program;
+        Program program; 
         [SetUp]
         public void Setup()
         {
@@ -37,6 +37,18 @@ namespace EmplyoeePayrollTesting
             empPayroll.IncomeTax = 5000;
             empPayroll.NetPay = 2978000;
             bool result = program.UpdateEmployeeSalary(empPayroll);
+            Assert.AreEqual(expected, result);
+        }
+        /// <summary>
+        /// UC5- Get Employee Data In Date Range
+        /// </summary>
+        [Test]
+        public void Given_DateRange_GetEmployeePayrollData()
+        {
+            bool expected = true;
+            var fromDate = Convert.ToDateTime("2022-03-01");
+            var ToDate = Convert.ToDateTime("2022-04-01");
+            bool result = program.GetEmplyeeDataInDateRange(fromDate, ToDate);
             Assert.AreEqual(expected, result);
         }
     }
