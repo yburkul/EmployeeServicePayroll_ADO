@@ -11,7 +11,7 @@ namespace EmployeeServicePayrollADO
         ExceptionType exceptionType;
         public enum ExceptionType
         {
-            Connection_Failed
+            Connection_Failed, Salary_Not_Update
         }
         public EmpException(ExceptionType exceptionType, string message) : base(message)
         {

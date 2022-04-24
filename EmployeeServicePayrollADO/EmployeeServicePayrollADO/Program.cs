@@ -78,6 +78,38 @@ namespace EmployeeServicePayrollADO
             }
             return empPayrollList;
         }
+       
+        public bool UpdateEmployeeSalary(EmpPayroll empPayroll)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    SqlCommand command = new SqlCommand("UpdateEmplyoeeSalary", connection);
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@EmpID", empPayroll.ID);
+                    command.Parameters.AddWithValue("@Name", empPayroll.Name);
+                    command.Parameters.AddWithValue("@BasicPay", empPayroll.BasicPay);
+                    command.Parameters.AddWithValue("@Deduction", empPayroll.Deduction);
+                    command.Parameters.AddWithValue("@TaxablePay", empPayroll.TaxablePay);
+                    command.Parameters.AddWithValue("@IncomeTax", empPayroll.IncomeTax);
+                    command.Parameters.AddWithValue("@NetPay", empPayroll.NetPay);
+                    connection.Open();
+                    var result = command.ExecuteNonQuery();
+                    connection.Close();
+                    if (result != 0)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                throw new EmpException(EmpException.ExceptionType.Salary_Not_Update, "Emplyoee Salary Not Updated");
+                return false;
+            }
+        }
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome in Employee Service Payroll");
