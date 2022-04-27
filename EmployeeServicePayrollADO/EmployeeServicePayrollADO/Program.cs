@@ -153,6 +153,46 @@ namespace EmployeeServicePayrollADO
                 return false;
             }
         }
+        public bool AddEmployee(EmpPayroll empPayroll)
+        {
+            try
+            {
+                using (sqlconnection)
+                {
+                    SqlCommand sqlCommand = new SqlCommand("dbo.insertDetails", sqlconnection);
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    sqlCommand.Parameters.AddWithValue("@ID", empPayroll.ID);
+                    sqlCommand.Parameters.AddWithValue("@Name", empPayroll.Name);
+                    sqlCommand.Parameters.AddWithValue("@StartDate", empPayroll.StartDate);
+                    sqlCommand.Parameters.AddWithValue("@Gender", empPayroll.Gender);
+                    sqlCommand.Parameters.AddWithValue("@PhoneNumber", empPayroll.PhoneNumber);
+                    sqlCommand.Parameters.AddWithValue("@Address", empPayroll.Address);
+                    sqlCommand.Parameters.AddWithValue("@Department", empPayroll.Department);
+                    sqlCommand.Parameters.AddWithValue("@BasicPay", empPayroll.BasicPay);
+                    sqlCommand.Parameters.AddWithValue("@Deduction", empPayroll.Deduction);
+                    sqlCommand.Parameters.AddWithValue("@TaxablePay", empPayroll.TaxablePay);
+                    sqlCommand.Parameters.AddWithValue("@IncomeTax", empPayroll.IncomeTax);
+                    sqlCommand.Parameters.AddWithValue("@NetPay", empPayroll.NetPay);
+                    Console.WriteLine(empPayroll.ID + "," + empPayroll.Name + "," + empPayroll.StartDate + "," + empPayroll.Gender + "," + empPayroll.PhoneNumber + ","
+                            + empPayroll.Address + "," + empPayroll.Department + "," + empPayroll.BasicPay + "," + empPayroll.Deduction + "," + empPayroll.TaxablePay + "," + empPayroll.IncomeTax + "," + empPayroll.NetPay);
+                    sqlconnection.Open();
+
+                    var result = sqlCommand.ExecuteNonQuery();
+                    sqlconnection.Close();
+                    if (result != 0)
+                    {
+                        return true;
+                    }
+                    return false;
+                    sqlconnection.Close();
+                }
+                sqlconnection.Close();
+            }
+            catch (Exception)
+            {
+                throw new EmpException(EmpException.ExceptionType.Details_Not_Coorect_Format, "Details is not correct format");
+            }
+        }
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome in Employee Service Payroll");
@@ -164,6 +204,7 @@ namespace EmployeeServicePayrollADO
                 Console.WriteLine("2: for CloseConnection");
                 Console.WriteLine("3: for Get all the Emplyoee data");
                 Console.WriteLine("4: for Get the Emplyoee Data in Date range");
+                Console.WriteLine("5: for Add the Employee Data");
                 Console.WriteLine("0: For Exit");
                 option = int.Parse(Console.ReadLine()); 
                 switch(option)
@@ -175,12 +216,49 @@ namespace EmployeeServicePayrollADO
                         program.CloseConnection();
                         break;
                     case 3:
-                        GetAllEmployeePayrollData();
+                       GetAllEmployeePayrollData();
                         break;
                     case 4:
                         var fromDate = Convert.ToDateTime("2022-03-01");
                         var ToDate = Convert.ToDateTime("2022-04-01");
                         program.GetEmplyeeDataInDateRange(fromDate, ToDate);
+                        break;
+                    case 5:
+                        EmpPayroll emp = new EmpPayroll();
+                        Console.WriteLine("Enter The Name");
+                        string name = Console.ReadLine();
+                        emp.Name = name;
+                        Console.WriteLine(" Emplyoee Join Date");
+                        string date = Console.ReadLine();
+                        emp.StartDate = Convert.ToDateTime(date);
+                        Console.WriteLine("Enter a Gender");
+                        string gender = Console.ReadLine();
+                        emp.Gender = gender;
+                        Console.WriteLine("Enter Phone number");
+                        double Phone = Convert.ToInt64(Console.ReadLine());
+                        emp.PhoneNumber = Phone;
+                        Console.WriteLine("Enter a Address");
+                        string address = Console.ReadLine();
+                        emp.Address = address;
+                        Console.WriteLine("Enter a Department");
+                        string department = Console.ReadLine();
+                        emp.Department = department;
+                        Console.WriteLine("Enter a Basic Pay");
+                        double basicpay = Convert.ToInt64(Console.ReadLine());
+                        emp.BasicPay = basicpay;
+                        Console.WriteLine("Enter a Deduction");
+                        int Deduction = int.Parse(Console.ReadLine());
+                        emp.Deduction = Deduction;
+                        Console.WriteLine("Enter a Taxable Pay");
+                        int taxablepay = int.Parse(Console.ReadLine());
+                        emp.TaxablePay = taxablepay;
+                        Console.WriteLine("Enter a Income Tax");
+                        int incometax = int.Parse(Console.ReadLine());
+                        emp.IncomeTax = incometax;
+                        Console.WriteLine("Enter a NetPay");
+                        int netpay = int.Parse(Console.ReadLine());
+                        emp.NetPay = netpay;
+                        program.AddEmployee(emp);
                         break;
                     case 0:
                         Console.WriteLine("Exit");
